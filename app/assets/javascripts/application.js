@@ -18,6 +18,8 @@
 //= require ember-data
 //= require_self
 //= require holidays
+//= require moment
+
 Holidays = Ember.Application.create({
   LOG_TRANSITIONS: true
 });

@@ -6,6 +6,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem 'handlebars-source', '1.0.0.rc3'
   gem 'ember-rails', :git => 'git://github.com/emberjs/ember-rails.git'
+  gem 'momentjs-rails', ">= 2.0.0.1"
 end
 gem 'jquery-rails'
 gem "unicorn", ">= 4.3.1", :group => :production
@@ -17,6 +18,7 @@ gem "email_spec", ">= 1.4.0", :group => :test
 gem "cucumber-rails", ">= 1.3.1", :group => :test, :require => false
 gem "launchy", ">= 2.2.0", :group => :test
 gem "capybara", ">= 2.0.3", :group => :test
+gem "capybara-webkit", ">= 0.14.2", :group => :test
 gem "guard-bundler", ">= 1.0.0", :group => :development
 gem "guard-cucumber", ">= 1.4.0", :group => :development
 gem "guard-rails", ">= 0.4.0", :group => :development
