@@ -5,8 +5,8 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'handlebars-source', '1.0.0.rc3'
-  gem 'ember-rails', :git => 'git://github.com/emberjs/ember-rails.git'
-  gem 'momentjs-rails', ">= 2.0.0.1"
+  gem 'ember-rails', git: 'git://github.com/emberjs/ember-rails.git'
+  gem 'momentjs-rails', git: "git@github.com:eddloschi/momentjs-rails.git"
 end
 gem 'jquery-rails'
 gem "unicorn", ">= 4.3.1", :group => :production
@@ -32,3 +32,4 @@ gem "quiet_assets", ">= 1.0.2", :group => :development
 gem "figaro", ">= 0.6.3"
 gem "better_errors", ">= 0.7.2", :group => :development
 gem "binding_of_caller", ">= 0.7.1", :group => :development, :platforms => [:mri_19, :rbx]
+gem "debugger"
