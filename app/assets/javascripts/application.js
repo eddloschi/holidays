@@ -10,6 +10,8 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
+//= require moment
+//= require moment/pt-br.js
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
@@ -18,7 +20,6 @@
 //= require ember-data
 //= require_self
 //= require holidays
-//= require moment
 
 Holidays = Ember.Application.create({
   LOG_TRANSITIONS: true
