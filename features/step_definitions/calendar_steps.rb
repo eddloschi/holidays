@@ -23,14 +23,7 @@ end
 Then(/^I should see matching weekdays$/) do
   first_day = Date.today.at_beginning_of_month
   last_day = Date.today.at_end_of_month
-  @rows = nil
-  if first_day.wday + last_day.day <= 28
-    @rows = 4
-  elsif first_day.wday + last_day.day <= 35
-    @rows = 5
-  else
-    @rows = 6
-  end
+  @rows = (first_day.wday + last_day.day - 1) / 7 + 1
   current_day = first_day - first_day.wday
   present_month = Date.today.month
   @rows.times do |r|

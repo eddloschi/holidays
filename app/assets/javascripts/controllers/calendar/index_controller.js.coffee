@@ -10,13 +10,7 @@ Holidays.CalendarIndexController = Ember.ObjectController.extend
   monthDays: (->
     currentDay = moment(@get('currentDate')).startOf 'month'
     currentMonth = currentDay.month()
-    rows = null
-    if currentDay.day() + moment(currentDay).endOf('month').date() <= 28
-      rows = 3
-    else if currentDay.day() + moment(currentDay).endOf('month').date() <= 35
-      rows = 4
-    else
-      rows = 5
+    rows = Math.floor((currentDay.day() + moment(currentDay).endOf('month').date() - 1) / 7)
     currentDay.subtract 'days', currentDay.day()
     days = []
     for row in [0..rows]
