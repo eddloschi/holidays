@@ -7,7 +7,7 @@
           <span id="month-id">{{currentMonthName}}</span>
           <span id="year-id">{{currentYear}}</span>
         </th>
-        <th id="increase" class="month-switcher">></th>
+        <th id="increase" class="month-switcher" {{action increaseMonth}}>></th>
       </tr>
       <tr class="days-week">
         {{#each weekDays}}
