@@ -16,5 +16,5 @@ Feature: View Calendar
   Scenario: User goes to the next month
     Given I'm on the home page
     And today is "2013-01-01"
-    When I click on the increase button
-    Then I should see "Feb"
+    When I click on the "#increase" button
+    Then I should see "Fev"

@@ -57,13 +57,12 @@ end
 
 Given(/^today is "(.*?)"$/) do |arg1|
   page.execute_script "Holidays.__container__.lookup('controller:calendarIndex').set('currentDate', moment('#{arg1}'))"
-  page.find("#month-id").should have_text "Jan"
 end
 
-When(/^I click on the increase button$/) do
-  pending # express the regexp above with the code you wish you had
+When(/^I click on the "(.*?)" button$/) do |arg1|
+  page.find("#{arg1}").click
 end
 
 Then(/^I should see "(.*?)"$/) do |arg1|
-  pending # express the regexp above with the code you wish you had
+  page.find("#month-id").should have_text arg1
 end
