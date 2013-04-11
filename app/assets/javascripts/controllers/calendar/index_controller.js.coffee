@@ -33,3 +33,5 @@ Holidays.CalendarIndexController = Ember.ObjectController.extend
     ).property('currentDate'),
   increaseMonth: ->
     @set('currentDate', moment(@get 'currentDate').add('months', 1))
+  decreaseMonth: ->
+    @set('currentDate', moment(@get 'currentDate').subtract('months', 1))
