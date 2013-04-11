@@ -2,8 +2,8 @@ Given(/^I'm on the home page$/) do
   visit root_path
 end
 
-Then(/^I should see a "(.*?)" element$/) do |arg1|
-  page.should have_selector arg1
+Then(/^I should see a "(.*?)" element$/) do |selector|
+  page.should have_selector selector
 end
 
 Then(/^I should see the "(.*?)" month$/) do |month|
@@ -55,10 +55,10 @@ Then(/^I should see the correct rows amount$/) do
   end
 end
 
-Given(/^today is "(.*?)"$/) do |arg1|
-  page.execute_script "Holidays.__container__.lookup('controller:calendarIndex').set('currentDate', moment('#{arg1}'))"
+Given(/^today is "(.*?)"$/) do |date|
+  page.execute_script "Holidays.__container__.lookup('controller:calendarIndex').set('currentDate', moment('#{date}'))"
 end
 
-When(/^I click on the "(.*?)" button$/) do |arg1|
-  page.find("#{arg1}").click
+When(/^I click on the "(.*?)" button$/) do |button|
+  page.find("#{button}").click
 end
