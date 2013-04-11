@@ -1,4 +1,4 @@
-// Last commit: da97bd6 (2013-04-05 11:42:10 -0700)
+// Last commit: e3c4048 (2013-04-09 20:35:58 -0700)
 
 
 (function() {
@@ -617,8 +617,11 @@ DS.Transaction = Ember.Object.extend({
     this.removeCleanRecords();
 
     if (!commitDetails.created.isEmpty() || !commitDetails.updated.isEmpty() || !commitDetails.deleted.isEmpty() || !relationships.isEmpty()) {
-      if (adapter && adapter.commit) { adapter.commit(store, commitDetails); }
-      else { throw fmt("Adapter is either null or does not implement `commit` method", this); }
+
+      Ember.assert("You tried to commit records but you have no adapter", adapter);
+      Ember.assert("You tried to commit records but your adapter does not implement `commit`", adapter.commit);
+
+      adapter.commit(store, commitDetails);
     }
 
     // Once we've committed the transaction, there is no need to
@@ -1429,8 +1432,11 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
 
     // let the adapter set the data, possibly async
     var adapter = this.adapterForType(type);
-    if (adapter && adapter.find) { adapter.find(this, type, id); }
-    else { throw "Adapter is either null or does not implement `find` method"; }
+
+    Ember.assert("You tried to find a record but you have no adapter (for " + type + ")", adapter);
+    Ember.assert("You tried to find a record but your adapter does not implement `find`", adapter.find);
+
+    adapter.find(this, type, id);
 
     return record;
   },
@@ -1562,8 +1568,11 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
           ids = map(references, function(reference) { return reference.id; });
 
       var adapter = this.adapterForType(type);
-      if (adapter && adapter.findMany) { adapter.findMany(this, type, ids, owner); }
-      else { throw "Adapter is either null or does not implement `findMany` method"; }
+
+      Ember.assert("You tried to load many records but you have no adapter (for " + type + ")", adapter);
+      Ember.assert("You tried to load many records but your adapter does not implement `findMany`", adapter.findMany);
+
+      adapter.findMany(this, type, ids, owner);
     }, this);
   },
 
@@ -1627,8 +1636,13 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
 
     if (!Ember.isArray(idsOrReferencesOrOpaque)) {
       var adapter = this.adapterForType(type);
-      if (adapter && adapter.findHasMany) { adapter.findHasMany(this, record, relationship, idsOrReferencesOrOpaque); }
-      else if (idsOrReferencesOrOpaque !== undefined) { throw fmt("Adapter is either null or does not implement `findHasMany` method", this); }
+
+      if (adapter && adapter.findHasMany) {
+        adapter.findHasMany(this, record, relationship, idsOrReferencesOrOpaque);
+      } else if (idsOrReferencesOrOpaque !== undefined) {
+        Ember.assert("You tried to load many records but you have no adapter (for " + type + ")", adapter);
+        Ember.assert("You tried to load many records but your adapter does not implement `findHasMany`", adapter.findHasMany);
+      }
 
       return this.createManyArray(type, Ember.A());
     }
@@ -1697,8 +1711,12 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
   findQuery: function(type, query) {
     var array = DS.AdapterPopulatedRecordArray.create({ type: type, query: query, content: Ember.A([]), store: this });
     var adapter = this.adapterForType(type);
-    if (adapter && adapter.findQuery) { adapter.findQuery(this, type, query, array); }
-    else { throw "Adapter is either null or does not implement `findQuery` method"; }
+
+    Ember.assert("You tried to load a query but you have no adapter (for " + type + ")", adapter);
+    Ember.assert("You tried to load a query but your adapter does not implement `findQuery`", adapter.findQuery);
+
+    adapter.findQuery(this, type, query, array);
+
     return array;
   },
 
@@ -1713,9 +1731,7 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
     @return {DS.AdapterPopulatedRecordArray}
   */
   findAll: function(type) {
-    var array = this.all(type);
-    this.fetchAll(type, array);
-    return array;
+    return this.fetchAll(type, this.all(type));
   },
 
   /**
@@ -1727,8 +1743,12 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
 
     set(array, 'isUpdating', true);
 
-    if (adapter && adapter.findAll) { adapter.findAll(this, type, sinceToken); }
-    else { throw "Adapter is either null or does not implement `findAll` method"; }
+    Ember.assert("You tried to load all records but you have no adapter (for " + type + ")", adapter);
+    Ember.assert("You tried to load all records but your adapter does not implement `findAll`", adapter.findAll);
+
+    adapter.findAll(this, type, sinceToken);
+
+    return array;
   },
 
   /**
@@ -2542,7 +2562,7 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
         cidToPrematerialized = this.clientIdToPrematerializedData;
 
     if (clientId !== undefined) {
-      cidToData[clientId] = data;
+      this.loadData(data, clientId, type);
       cidToPrematerialized[clientId] = prematerialized;
 
       var record = this.recordCache[clientId];
@@ -2598,6 +2618,12 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
     }
   },
 
+  loadData: function(data, clientId, type){
+    var cidToData = this.clientIdToData;
+
+    cidToData[clientId] = data;
+  },
+
   /** @private
 
     Stores data for the specified type and id combination and returns
@@ -2621,7 +2647,7 @@ DS.Store = Ember.Object.extend(DS._Mappable, {
 
     var clientId = ++this.clientIdCounter;
 
-    cidToData[clientId] = data;
+    this.loadData(data, clientId, type);
     clientIdToTypeMap[clientId] = type;
 
     // if we're creating an item, this process will be done
@@ -3025,11 +3051,11 @@ var willSetProperty = function(manager, context) {
   context.oldValue = get(get(manager, 'record'), context.name);
 
   var change = DS.AttributeChange.createChange(context);
-  get(manager, 'record')._changesToSync[context.attributeName] = change;
+  get(manager, 'record')._changesToSync[context.name] = change;
 };
 
 var didSetProperty = function(manager, context) {
-  var change = get(manager, 'record')._changesToSync[context.attributeName];
+  var change = get(manager, 'record')._changesToSync[context.name];
   change.value = get(get(manager, 'record'), context.name);
   change.sync();
 };
@@ -3360,9 +3386,6 @@ var states = {
       // SUBSTATES
 
       materializing: DS.State.create({
-        // FLAGS
-        isLoaded: false,
-
         // EVENTS
         willSetProperty: Ember.K,
         didSetProperty: Ember.K,
@@ -3375,6 +3398,9 @@ var states = {
 
         // SUBSTATES
         firstTime: DS.State.create({
+          // FLAGS
+          isLoaded: false,
+
           exit: function(manager) {
             var record = get(manager, 'record');
 
@@ -3439,8 +3465,15 @@ var states = {
         },
 
         unloadRecord: function(manager) {
+          var record = get(manager, 'record');
+
+          // clear relationships before moving to deleted state
+          // otherwise it fails
+          record.clearRelationships();
+          record.withTransaction(function(t) {
+            t.recordIsMoving('updated', record);
+          });
           manager.transitionTo('deleted.saved');
-          get(manager, 'record').clearRelationships();
         },
 
         invokeLifecycleCallbacks: function(manager, dirtyType) {
@@ -3721,10 +3754,6 @@ DS.Model = Ember.Object.extend(Ember.Evented, LoadPromise, {
 
   didChangeData: function() {
     this.send('didChangeData');
-  },
-
-  setProperty: function(key, value, oldValue) {
-    this.send('setProperty', { key: key, value: value, oldValue: oldValue });
   },
 
   /**
@@ -4127,7 +4156,7 @@ DS.attr = function(type, options) {
 
 (function() {
 var get = Ember.get, set = Ember.set,
-    none = Ember.isNone;
+    isNone = Ember.isNone;
 
 DS.belongsTo = function(type, options) {
   Ember.assert("The first argument DS.belongsTo must be a model type or string, like DS.belongsTo(App.Person)", !!type && (typeof type === 'string' || DS.Model.detect(type)));
@@ -4151,7 +4180,7 @@ DS.belongsTo = function(type, options) {
 
     id = data[key];
 
-    if(!id) {
+    if(isNone(id)) {
       return null;
     } else if (id.clientId) {
       return store.recordForReference(id);
@@ -5506,6 +5535,11 @@ DS.Serializer = Ember.Object.extend({
 
   extract: mustImplement('extract'),
   extractMany: mustImplement('extractMany'),
+  extractId: mustImplement('extractId'),
+  extractAttribute: mustImplement('extractAttribute'),
+  extractHasMany: mustImplement('extractHasMany'),
+  extractBelongsTo: mustImplement('extractBelongsTo'),
+  createSerializedForm: mustImplement('createSerializedForm'),
 
   extractRecordRepresentation: function(loader, type, json, shouldSideload) {
     var prematerialized = {}, reference;
@@ -5695,7 +5729,7 @@ DS.Serializer = Ember.Object.extend({
     @param {String} key the key to add to the serialized data
     @param {any} value the value to add to the serialized data
   */
-  addAttribute: Ember.K,
+  addAttribute: mustImplement('addAttribute'),
 
   /**
     A hook you can use to customize how the record's id is added to
@@ -5712,7 +5746,7 @@ DS.Serializer = Ember.Object.extend({
     @param {String} key the resolved primary key
     @param {id} id the serialized id
   */
-  addId: Ember.K,
+  addId: mustImplement('addId'),
 
   /**
     A hook you can use to customize how the record's type is added to
@@ -5775,7 +5809,7 @@ DS.Serializer = Ember.Object.extend({
     @param {String} key the key for the serialized object
     @param {Object} relationship an object representing the relationship
   */
-  addBelongsTo: Ember.K,
+  addBelongsTo: mustImplement('addBelongsTo'),
 
   /**
     A hook you can use to add a `hasMany` relationship to the
@@ -5800,7 +5834,7 @@ DS.Serializer = Ember.Object.extend({
     @param {String} key the key for the serialized object
     @param {Object} relationship an object representing the relationship
   */
-  addHasMany: Ember.K,
+  addHasMany: mustImplement('addHasMany'),
 
   /**
     NAMING CONVENTIONS
@@ -6557,7 +6591,7 @@ DS.Serializer = Ember.Object.extend({
 
 
 (function() {
-var none = Ember.isNone;
+var none = Ember.isNone, empty = Ember.isEmpty;
 
 /**
   DS.Transforms is a hash of transforms used by DS.Serializer.
@@ -6575,11 +6609,11 @@ DS.JSONTransforms = {
 
   number: {
     deserialize: function(serialized) {
-      return none(serialized) ? null : Number(serialized);
+      return empty(serialized) ? null : Number(serialized);
     },
 
     serialize: function(deserialized) {
-      return none(deserialized) ? null : Number(deserialized);
+      return empty(deserialized) ? null : Number(deserialized);
     }
   },
 
@@ -6768,7 +6802,9 @@ DS.JSONSerializer = DS.Serializer.extend({
         name = relationship.key,
         value = null,
         includeType = (relationship.options && relationship.options.polymorphic),
-        embeddedChild;
+        embeddedChild,
+        child,
+        id;
 
     if (this.embeddedType(type, name)) {
       if (embeddedChild = get(record, name)) {
@@ -6777,14 +6813,13 @@ DS.JSONSerializer = DS.Serializer.extend({
 
       hash[key] = value;
     } else {
-      var child = get(record, relationship.key),
-          id = get(child, 'id');
-      if (!Ember.isNone(id)) {
-        if (relationship.options && relationship.options.polymorphic) {
-          this.addBelongsToPolymorphic(hash, key, id, child.constructor);
-        } else {
-           hash[key] = id;
-        }
+      child = get(record, relationship.key);
+      id = get(child, 'id');
+
+      if (relationship.options && relationship.options.polymorphic && !Ember.isNone(id)) {
+        this.addBelongsToPolymorphic(hash, key, id, child.constructor);
+      } else {
+        hash[key] = id === undefined ? null : this.serializeId(id);
       }
     }
   },
@@ -6927,9 +6962,7 @@ DS.JSONSerializer = DS.Serializer.extend({
       }
 
       sideloadedType = this.typeFromAlias(prop);
-      Ember.assert("Your server returned a hash with the key " + prop +
-                   " but you have no mapping for it",
-                   !!sideloadedType);
+      Ember.assert("Your server returned a hash with the key " + prop + " but you have no mapping for it", !!sideloadedType);
 
       this.loadValue(loader, sideloadedType, json[prop]);
     }
@@ -7844,6 +7877,27 @@ DS.FixtureSerializer = DS.Serializer.extend({
 
   extractBelongsTo: function(type, hash, key) {
     return hash[key];
+  },
+
+  extractBelongsToPolymorphic: function(type, hash, key) {
+    var keyForId = this.keyForPolymorphicId(key),
+        keyForType,
+        id = hash[keyForId];
+
+    if (id) {
+      keyForType = this.keyForPolymorphicType(key);
+      return {id: id, type: hash[keyForType]};
+    }
+
+    return null;
+  },
+
+  keyForPolymorphicId: function(key) {
+    return key;
+  },
+
+  keyForPolymorphicType: function(key) {
+    return key + '_type';
   }
 });
 
@@ -8705,16 +8759,22 @@ DS.BasicAdapter = DS.Adapter.extend({
 
   createRecord: function(store, type, record) {
     var sync = type.sync;
+    Ember.assert("You are trying to use the BasicAdapter to query " + type + " but " + type + ".sync was not found", sync);
+    Ember.assert("The sync code on " + type + " does not implement createRecord(), but you are trying to create a " + type + " record", sync.createRecord);
     sync.createRecord(record, saveProcessorFactory(store, type));
   },
 
   updateRecord: function(store, type, record) {
     var sync = type.sync;
+    Ember.assert("You are trying to use the BasicAdapter to query " + type + " but " + type + ".sync was not found", sync);
+    Ember.assert("The sync code on " + type + " does not implement updateRecord(), but you are trying to update a " + type + " record", sync.updateRecord);
     sync.updateRecord(record, saveProcessorFactory(store, type, true));
   },
 
   deleteRecord: function(store, type, record) {
     var sync = type.sync;
+    Ember.assert("You are trying to use the BasicAdapter to query " + type + " but " + type + ".sync was not found", sync);
+    Ember.assert("The sync code on " + type + " does not implement deleteRecord(), but you are trying to delete a " + type + " record", sync.deleteRecord);
     sync.deleteRecord(record, saveProcessorFactory(store, type, true));
   }
 });

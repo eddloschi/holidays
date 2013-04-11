@@ -17,7 +17,7 @@ gem "mongoid-rspec", ">= 1.7.0", :group => :test
 gem "email_spec", ">= 1.4.0", :group => :test
 gem "cucumber-rails", ">= 1.3.1", :group => :test, :require => false
 gem "launchy", ">= 2.2.0", :group => :test
-gem "capybara", ">= 2.0.3", :group => :test
+gem "capybara", "2.0.3", :group => :test
 gem "capybara-webkit", ">= 0.14.2", :group => :test
 gem "guard-bundler", ">= 1.0.0", :group => :development
 gem "guard-cucumber", ">= 1.4.0", :group => :development
