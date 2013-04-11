@@ -6,18 +6,18 @@ Then(/^I should see a "(.*?)" element$/) do |arg1|
   page.should have_selector arg1
 end
 
-Then(/^I should see the present month$/) do
-  current_month = I18n.l Date.today, format: '%b'
-  within 'span#month-id' do
-    page.should have_text current_month
+Then(/^I should see the "(.*?)" month$/) do |month|
+  if month == 'present'
+    month = I18n.l Date.today, format: '%b'
   end
+  page.find("#month-id").should have_text month
 end
 
-Then(/^I should see the present year$/) do
-  current_year = Date.today.strftime '%Y'
-  within 'span#year-id' do
-    page.should have_content current_year
+Then(/^I should see the "(.*?)" year$/) do |year|
+  if year == 'present'
+    year = Date.today.strftime '%Y'
   end
+  page.find("#year-id").should have_text year
 end
 
 Then(/^I should see matching weekdays$/) do
@@ -61,8 +61,4 @@ end
 
 When(/^I click on the "(.*?)" button$/) do |arg1|
   page.find("#{arg1}").click
-end
-
-Then(/^I should see "(.*?)"$/) do |arg1|
-  page.find("#month-id").should have_text arg1
 end
