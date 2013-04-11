@@ -18,6 +18,7 @@ Feature: View Calendar
     And today is "2013-01-01"
     When I click on the "#increase" button
     Then I should see the "Fev" month
+    And I should see the "2013" year
 
   @javascript
   Scenario: User goes to the previous month
@@ -25,3 +26,20 @@ Feature: View Calendar
     And today is "2013-02-01"
     When I click on the "#decrease" button
     Then I should see the "Jan" month
+    And I should see the "2013" year
+
+  @javascript
+  Scenario: User goes to the next year
+    Given I'm on the home page
+    And today is "2013-12-31"
+    When I click on the "#increase" button
+    Then I should see the "Jan" month
+    And I should see the "2014" year
+
+  @javascript
+  Scenario: User goes to the previous year
+    Given I'm on the home page
+    And today is "2013-01-01"
+    When I click on the "#decrease" button
+    Then I should see the "Dez" month
+    And I should see the "2012" year
