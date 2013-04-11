@@ -1,12 +1,16 @@
 Holidays.CalendarIndexController = Ember.ObjectController.extend
   currentDate: moment()
+
   currentMonthName: (->
-      @get('currentDate').format('MMM')
-    ).property('currentDate')
+    @get('currentDate').format('MMM')
+  ).property('currentDate')
+
   currentYear: (->
-      @get('currentDate').format('YYYY')
-    ).property('currentDate')
+    @get('currentDate').format('YYYY')
+  ).property('currentDate')
+
   weekDays: moment()._lang._weekdays
+
   monthDays: (->
     currentDay = moment(@get('currentDate')).startOf 'month'
     currentMonth = currentDay.month()
@@ -21,11 +25,12 @@ Holidays.CalendarIndexController = Ember.ObjectController.extend
           'day': moment(currentDay).date(),
           'id': "#{row}-#{col}"
           'class': if currentMonth is currentDay.month() then 'enabled' else 'disabled'
-
         currentDay.add 'days', 1
     days
-    ).property('currentDate'),
+  ).property('currentDate'),
+
   increaseMonth: ->
     @set('currentDate', moment(@get 'currentDate').add('months', 1))
+
   decreaseMonth: ->
     @set('currentDate', moment(@get 'currentDate').subtract('months', 1))
