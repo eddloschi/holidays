@@ -4,10 +4,17 @@ Feature: View Calendar
   I wanto to view a month's calendar
 
   @javascript
-  Scenario: View current month's calendar
-    When I enter the page
-    Then I should see a calendar element
-    And I should see the current month
-    And I should see the current year
+  Scenario: View present month's calendar
+    Given I'm on the home page
+    Then I should see a "div#calendar-id" element
+    And I should see the present month
+    And I should see the present year
     And I should see matching weekdays
     And I should see the correct rows amount
+
+  @javascript
+  Scenario: User goes to the next month
+    Given I'm on the home page
+    And today is "2013-01-01"
+    When I click on the increase button
+    Then I should see "Feb"
