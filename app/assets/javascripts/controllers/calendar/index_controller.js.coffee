@@ -1,4 +1,4 @@
-Holidays.CalendarIndexController = Ember.ObjectController.extend
+Holidays.CalendarIndexController = Ember.Controller.extend
   currentDate: moment()
 
   currentMonthName: (->
@@ -9,7 +9,7 @@ Holidays.CalendarIndexController = Ember.ObjectController.extend
     @get('currentDate').format('YYYY')
   ).property('currentDate')
 
-  weekDays: moment()._lang._weekdays
+  weekDays: moment()._lang._weekdaysShort
 
   monthDays: (->
     currentDay = moment(@get('currentDate')).startOf 'month'
