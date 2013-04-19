@@ -1,0 +1,42 @@
+<div class="span4">
+<div id="calendar-id">
+  <table id="month-view" class="table">
+    <thead>
+      <tr class="month-title">
+        <th id="decrease" class="month-switcher" {{action decreaseMonth}} ><</th>
+        <th colspan=5>
+          <span id="month-id">{{currentMonthName}}</span>
+          <span id="year-id">{{currentYear}}</span>
+        </th>
+        <th id="increase" class="month-switcher" {{action increaseMonth}}>></th>
+      </tr>
+      <tr class="days-week">
+        {{#each weekDays}}
+        <th>{{this}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each monthDays}}
+      <tr>
+        {{#each days}}
+        <td {{bindAttr id="id"}} {{bindAttr class="class"}}>{{day}}</td>
+        {{/each}}
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+<div class="span8">
+
+<div id="holidays-id">
+  {{#each controller}}
+    <h3>{{name}}</h3>
+  {{/each}}
+</div>
+
+  {{outlet}}
+</div>
