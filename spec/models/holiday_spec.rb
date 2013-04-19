@@ -1,5 +1,29 @@
 require 'spec_helper'
 
 describe Holiday do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  before do
+    @holiday = FactoryGirl.create :holiday
+  end
+
+  it 'should have a name attribute' do
+    @holiday.should be_valid
+    @holiday.name = nil
+    @holiday.should_not be_valid
+  end
+
+  it 'should have a schedule attribute' do
+    @holiday.should be_valid
+    @holiday.schedule = nil
+    @holiday.should_not be_valid
+  end
+
+  it 'should have a recurrent attribute' do
+    @holiday.should be_valid
+    @holiday.recurrent = nil
+    @holiday.should_not be_valid
+  end
+
+
+
 end

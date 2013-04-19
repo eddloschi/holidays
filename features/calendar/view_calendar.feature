@@ -1,6 +1,6 @@
 Feature: View Calendar
   In order to view holidays
-  As a user
+  As a guest user
   I wanto to view a month's calendar
 
   @javascript

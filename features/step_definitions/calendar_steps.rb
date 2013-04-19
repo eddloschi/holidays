@@ -1,7 +1,3 @@
-Given(/^I'm on the home page$/) do
-  visit root_path
-end
-
 Then(/^I should see a "(.*?)" element$/) do |selector|
   page.should have_selector selector
 end
@@ -46,10 +42,6 @@ Then(/^I should see the correct rows amount$/) do
   within '#calendar-id tbody' do
     page.all('tr').count.should == @rows
   end
-end
-
-Given(/^today is "(.*?)"$/) do |date|
-  page.execute_script "Holidays.__container__.lookup('controller:calendarIndex').set('currentDate', moment('#{date}'))"
 end
 
 When(/^I click on the "(.*?)" button$/) do |button|
