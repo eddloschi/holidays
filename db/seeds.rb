@@ -14,4 +14,6 @@ schedule = IceCube::Schedule.new() do |s|
   s.add_recurrence_rule(IceCube::Rule.yearly.day_of_week(:sunday => [2]).month_of_year(:may))
 end
 
-Holiday.create(name: 'Mom`s Day', schedule: schedule.to_hash, recurrent: true)
+Holiday.create(name: 'Mom\'s Day', schedule: schedule.to_hash, recurrent: true)
+Holiday.create(name: 'Work Day', schedule: {month_of_year: 5, day_of_month: 1}, recurrent: false)
+Holiday.create(name: 'Corpus Christ', schedule: {month_of_year: 5, day_of_month: 30}, recurrent: false)
