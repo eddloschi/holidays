@@ -3,19 +3,14 @@ require 'spec_helper'
 describe HolidaysController do
 
   before do
-    FactoryGirl.create(:holiday).save
+    @holiday = FactoryGirl.create(:holiday)
   end
 
   describe "GET 'index'" do
-    it "should be successful" do
-      visit '/holidays.json'
-      page.status_code.should == 200
-    end
-
-    it "should return holidays as root" do
-      visit '/holidays.json'
+    it 'should return a complete and valid holiday' do
+      visit '/holidays/2013-12'
       hash = page.source
-      /^\{"holidays":\[\{/.match(hash).should_not == nil
+      /\{"holidays":\[\{"_id":"#{@holiday.id}","name":"Christmas","recurrent":false,"schedule":\{"month_of_year":12,"day_of_month":25\}\}\]\}/.match(hash).should_not == nil
     end
   end
 
