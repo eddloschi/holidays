@@ -11,7 +11,12 @@ Holidays.IndexRoute = Ember.Route.extend
 
 Holidays.CalendarRoute = Ember.Route.extend
   model: ->
-    Holidays.Holiday.find()
+    ym = @controllerFor('calendar').currentDate.format('YYYY-MM')
+    Holidays.Holiday.find({arg: ym})
+
+Holidays.CalendarIndexRoute = Ember.Route.extend
+  model: ->
+    @modelFor 'calendar'
 
 # Holidays.CalendarIndexRoute = Ember.Route.extend
 #   redirect: ->
