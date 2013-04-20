@@ -5,7 +5,10 @@ Feature: View Holiday
 
   @javascript
   Scenario: View month with fixed holidays
-    Given I'm on the home page
+    Given the following holiday exists:
+      | name              | schedule                                | recurrent       |
+      | Valentines Day    | {month_of_year: 2, day_of_month: 14 }   | false           |
+    And I'm on the home page
     And today is "2013-02-01"
     Then I should see the following list:
       | name              | date                          |
