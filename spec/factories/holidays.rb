@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :holiday do
     name "Christmas"
-    schedule({month_of_year: 12, day_of_month: 25})
+    schedule({month_of_year: 12, day_of_month: 25}.to_yaml)
     recurrent false
   end
 end

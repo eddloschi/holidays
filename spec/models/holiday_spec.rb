@@ -24,6 +24,22 @@ describe Holiday do
     @holiday.should_not be_valid
   end
 
+  it 'should have a next ocurrence when retrieved' do
+    holiday = Holiday.first
+    holiday.should respond_to :next_occurrence
+  end
 
+  it 'should return a valid next occurence' do
+    schedule = YAML.load(@holiday.schedule)
+    day = schedule[:day_of_month]
+    month = schedule[:month_of_year]
+    today = Date.today
+    if today.day > day and today.month >= month
+      today >> 12
+    end
+    date = Date.new(today.year, month, day)
+    holiday = Holiday.first
+    holiday.next_occurrence.should == date
+  end
 
 end
