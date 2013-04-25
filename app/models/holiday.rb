@@ -1,7 +1,7 @@
 class Holiday
   include Mongoid::Document
   field :name, type: String
-  field :schedule, type: String
+  field :schedule, type: Hash
   field :recurrent, type: Boolean
 
   validates_presence_of :name, :schedule, :recurrent
@@ -10,10 +10,9 @@ class Holiday
 
   def create_next_occurrence
     if self.recurrent?
-      sched = IceCube::Schedule.from_yaml(self.schedule)
+      sched = IceCube::Schedule.from_hash(self.schedule)
       self[:next_occurrence] = sched.next_occurrence
     elsif
-      schedule = YAML.load(self.schedule)
       day = schedule[:day_of_month]
       month = schedule[:month_of_year]
       today = Date.today

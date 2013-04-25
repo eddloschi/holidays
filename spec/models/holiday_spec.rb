@@ -30,7 +30,6 @@ describe Holiday do
   end
 
   it 'should return a valid next occurence' do
-    schedule = YAML.load(@holiday.schedule)
     day = schedule[:day_of_month]
     month = schedule[:month_of_year]
     today = Date.today
