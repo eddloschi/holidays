@@ -10,8 +10,8 @@ class Holiday
 
   def create_next_occurrence
     if self.recurrent?
-      sched = IceCube::Schedule.from_hash(self.schedule)
-      self[:next_occurrence] = sched.next_occurrence
+      schedule = IceCube::Schedule.from_hash(self.schedule)
+      self[:next_occurrence] = schedule.next_occurrence
     elsif
       day = schedule[:day_of_month]
       month = schedule[:month_of_year]
