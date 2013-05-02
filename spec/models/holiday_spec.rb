@@ -30,8 +30,8 @@ describe Holiday do
   end
 
   it 'should return a valid next occurence' do
-    day = schedule[:day_of_month]
-    month = schedule[:month_of_year]
+    day = @holiday.schedule[:day_of_month]
+    month = @holiday.schedule[:month_of_year]
     today = Date.today
     if today.day > day and today.month >= month
       today >> 12

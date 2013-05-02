@@ -13,6 +13,7 @@ class Holiday
       schedule = IceCube::Schedule.from_hash(self.schedule)
       self[:next_occurrence] = schedule.next_occurrence
     elsif
+      schedule = HashWithIndifferentAccess.new(self.schedule)
       day = schedule[:day_of_month]
       month = schedule[:month_of_year]
       today = Date.today

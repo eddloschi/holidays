@@ -10,7 +10,7 @@ describe HolidaysController do
     it 'should return a complete and valid holiday' do
       visit '/holidays/2013-12'
       hash = page.source
-      /\{"holidays":\[\{"_id":"#{@holiday.id}","name":"Christmas","recurrent":false,"schedule":\{"month_of_year":12,"day_of_month":25\}\}\]\}/.match(hash).should_not == nil
+      /\{"holidays":\[\{"_id":"#{@holiday.id}","name":"Christmas","next_occurrence":"2013-12-25T00:00:00Z","recurrent":false,"schedule":\{"month_of_year":12,"day_of_month":25\}\}\]\}/.match(hash).should_not == nil
     end
   end
 
