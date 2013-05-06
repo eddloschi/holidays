@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Holiday do
 
   before do
-    @holiday = FactoryGirl.create :holiday
+    @holiday = FactoryGirl.build_stubbed :holiday
   end
 
   it 'should have a name attribute' do
@@ -25,8 +25,8 @@ describe Holiday do
   end
 
   it 'should have a next ocurrence when retrieved' do
-    holiday = Holiday.first
-    holiday.should respond_to :next_occurrence
+    @holiday.send(:create_next_occurrence)
+    @holiday.should respond_to :next_occurrence
   end
 
   it 'should return a valid next occurence' do
@@ -37,8 +37,8 @@ describe Holiday do
       today >> 12
     end
     date = Date.new(today.year, month, day)
-    holiday = Holiday.first
-    holiday.next_occurrence.should == date
+    @holiday.send(:create_next_occurrence)
+    @holiday.next_occurrence.should == date
   end
 
 end
