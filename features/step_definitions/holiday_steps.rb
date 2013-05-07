@@ -1,7 +1,6 @@
 Given(/^the following holiday exists:$/) do |table|
-  table.map_column!(:schedule) { |str_schedule| eval str_schedule }
   table.hashes.each do |holiday|
-    FactoryGirl.create(:holiday, holiday).save
+    FactoryGirl.create(holiday["name"].to_sym).save
   end
 end
 

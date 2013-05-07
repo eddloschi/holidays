@@ -6,23 +6,28 @@ Feature: View Holiday
   @javascript
   Scenario: View month with fixed holidays
     Given the following holiday exists:
-      | name              | schedule                                | recurrent       |
-      | Valentines Day    | {month_of_year: 2, day_of_month: 14 }   | false           |
+      | name      |
+      | christmas |
     And I'm on the home page
-    And today is "2013-02-01"
+    And today is "2013-12-01"
     Then I should see the following list:
-      | name              | date                          |
-      | Valentines Day    | Quinta-feira, 14 de fevereiro |
+      | name              | date                                 |
+      | Christmas         | Quarta-feira, 25 de Dezembro de 2013 |
 
   @javascript
   Scenario: View month with a recurrent rule holidays
-    Given I'm on the home page
+    Given the following holiday exists:
+      | name              |
+      | mothers           |
+      | labor             |
+      | corpus_christ     |
+    And I'm on the home page
     And today is "2013-05-01"
     Then I should see the following list:
-      | name              | date                          |
-      | Mom's Day         | Domingo, 11 de maio           |
-      | Work Day          | Quarta-feira, 1 de maio       |
-      | Corpus Christ     | Quinta-feira, 30 de maio      |
+      | name              | date                                 |
+      | Mother's Day      | Domingo, 12 de Maio de 2013          |
+      | Labor Day         | Quarta-feira, 1 de Maio de 2013      |
+      | Corpus Christ     | Quinta-feira, 30 de Maio de 2013     |
 
   @javascript
   Scenario: View month with an arbitrary holiday
