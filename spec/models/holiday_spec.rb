@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Holiday do
 
   before do
-    @holiday = FactoryGirl.build_stubbed :holiday
+    @holiday = FactoryGirl.build_stubbed :christmas
   end
 
   it 'should have a name attribute' do
