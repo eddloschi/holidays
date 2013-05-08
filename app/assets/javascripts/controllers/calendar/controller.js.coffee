@@ -1,4 +1,9 @@
 Holidays.CalendarController = Ember.ArrayController.extend
+  holidays: (->
+    ym = @get('currentDate').format('YYYY-MM')
+    Holidays.Holiday.find({arg: ym})
+  ).property('currentDate')
+
   currentDate: moment()
 
   currentMonthName: (->
@@ -27,7 +32,7 @@ Holidays.CalendarController = Ember.ArrayController.extend
           'class': if currentMonth is currentDay.month() then 'enabled' else 'disabled'
         currentDay.add 'days', 1
     days
-  ).property('currentDate'),
+  ).property('holidays.isLoaded')
 
   increaseMonth: ->
     @set('currentDate', moment(@get 'currentDate').add('months', 1))
