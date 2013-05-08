@@ -22,9 +22,9 @@ Then(/^I should see matching weekdays$/) do
   @rows = (first_day.wday + last_day.day - 1) / 7 + 1
   current_day = first_day - first_day.wday
   present_month = Date.today.month
-  @rows.times do |r|
-    7.times do |c|
-      element = page.find("##{r}-#{c}")
+  @rows.times do
+    7.times do
+      element = page.find("##{current_day.month}-#{current_day.day}")
       element.should have_text current_day.day.to_s
       if current_day.month == present_month
         element["class"].should include "enabled"
@@ -46,4 +46,10 @@ end
 
 When(/^I click on the "(.*?)" button$/) do |button|
   page.find("#{button}").click
+end
+
+Then(/^I should see the following days highlighted:$/) do |table|
+  table.hashes.each do |hash|
+    page.find("##{hash['date']}")['class'].should include 'highlighted'
+  end
 end

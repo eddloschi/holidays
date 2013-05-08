@@ -4,4 +4,3 @@ Holidays.Holiday = DS.Model.extend
   nextOccurrenceMoment: (->
     moment(@get('nextOccurrence')).utc().format('dddd, LL')
   ).property('nextOccurrence')
-

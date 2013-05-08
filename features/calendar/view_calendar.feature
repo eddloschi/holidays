@@ -43,3 +43,16 @@ Feature: View Calendar
     When I click on the "#decrease" button
     Then I should see the "Dez" month
     And I should see the "2012" year
+
+  @javascript
+  Scenario: User goes to a month with holidays
+    Given the following holiday exists:
+      | name    |
+      | labor   |
+      | mothers |
+    And I'm on the home page
+    And today is "2013-05-01"
+    Then I should see the following days highlighted:
+      | date |
+      | 5-1  |
+      | 5-12 |

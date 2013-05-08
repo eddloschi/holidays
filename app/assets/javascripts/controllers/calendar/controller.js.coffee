@@ -16,6 +16,15 @@ Holidays.CalendarController = Ember.ArrayController.extend
 
   weekDays: moment()._lang._weekdaysShort
 
+  highlight: (currentDay) ->
+    highlighted = ''
+    @get('holidays').forEach (item, index, enumerable) ->
+      nextOccurrence = item.get('nextOccurrence')
+      if nextOccurrence.getUTCMonth() is moment(currentDay).month() and nextOccurrence.getUTCDate() is moment(currentDay).date()
+        highlighted = 'highlighted'
+        1
+    highlighted
+
   monthDays: (->
     currentDay = moment(@get('currentDate')).startOf 'month'
     currentMonth = currentDay.month()
@@ -28,8 +37,9 @@ Holidays.CalendarController = Ember.ArrayController.extend
       for col in [0..6]
         days[row].days[col] =
           'day': moment(currentDay).date(),
-          'id': "#{row}-#{col}"
-          'class': if currentMonth is currentDay.month() then 'enabled' else 'disabled'
+          'id': "#{moment(currentDay).month() + 1}-#{moment(currentDay).date()}"
+          'enabled': if currentMonth is currentDay.month() then 'enabled' else 'disabled'
+          'highlighted': @highlight currentDay
         currentDay.add 'days', 1
     days
   ).property('holidays.isLoaded')
