@@ -4,7 +4,3 @@ Holidays.Router.reopen
 Holidays.Router.map ->
   @resource 'calendar', ->
     @resource 'holiday'
-
-Holidays.IndexRoute = Ember.Route.extend
-  redirect: ->
-    @transitionTo 'calendar'
